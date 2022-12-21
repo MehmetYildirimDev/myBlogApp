@@ -12,6 +12,7 @@ const indexRoutes = require("./routes/indexRoutes");
       adminRoutes = require("./routes/adminRoutes");
 
 //appConfig
+mongoose.set("strictQuery", false);
 mongoose.connect("mongodb://localhost/BlogApp");
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -28,7 +29,7 @@ app.use(require("express-session")({
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new localStorage(User.authenticate()));
+passport.use(new LocalStragety(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
