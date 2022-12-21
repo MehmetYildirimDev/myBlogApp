@@ -37,9 +37,7 @@ router.get("/resume", (req,res)=>{
       res.render("resume");     
 })
 
-router.get("/signin", (req,res)=>{
-      res.render("admin/signin");     
-})
+
       module.exports = router;
 
 
