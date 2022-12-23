@@ -13,7 +13,23 @@ const indexRoutes = require("./routes/indexRoutes");
 
 //appConfig
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb://localhost/BlogApp");
+//mongoose.connect("mongodb://localhost:27017",(err)=>{
+//    if(!err) console.log('db connected');
+//    else console.log('db error');
+//});
+mongoose.connect('mongodb://127.0.0.1:27017/myapp').then(() => {
+    console.log("Connected to Database");
+}).catch((err) => {
+    console.log("Not Connected to Database ERROR! ", err);
+});
+
+//mongoose.connect("mongodb://localhost:27017").then(() => {
+//    console.log("Connected to Database");
+//}).catch((err) => {
+//    console.log("Not Connected to Database ERROR! ", err);
+//});
+
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended : true}));
