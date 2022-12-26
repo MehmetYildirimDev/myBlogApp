@@ -7,35 +7,9 @@ const mongoose      =    require("mongoose"),
     bodyParser      =    require("body-parser"),
     app             =    express();
 
-//Routes
-const indexRoutes = require("./routes/indexRoutes");
-      adminRoutes = require("./routes/adminRoutes");
+    app.use(bodyParser.urlencoded({extended : true}));
 
-//appConfig
-mongoose.set("strictQuery", false);
-//mongoose.connect("mongodb://localhost:27017",(err)=>{
-//    if(!err) console.log('db connected');
-//    else console.log('db error');
-//});
-mongoose.connect('mongodb://127.0.0.1:27017/myapp').then(() => {
-    console.log("Connected to Database");
-}).catch((err) => {
-    console.log("Not Connected to Database ERROR! ", err);
-});
-
-//mongoose.connect("mongodb://localhost:27017").then(() => {
-//    console.log("Connected to Database");
-//}).catch((err) => {
-//    console.log("Not Connected to Database ERROR! ", err);
-//});
-
-
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({extended : true}));
-
-
-//passport config
+    //passport config
 app.use(require("express-session")({
     secret:"bu bizim guvenlik cumlemiz",
     resave:false,
@@ -43,8 +17,38 @@ app.use(require("express-session")({
 
 }));
 
+
+
+
+//Routes
+const indexRoutes = require("./routes/indexRoutes");
+      adminRoutes = require("./routes/adminRoutes");
+      blogRoutes = require("./routes/blogRoutes");
+
+      
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+
+//appConfig
+mongoose.set("strictQuery", false);
+mongoose.connect('mongodb://127.0.0.1:27017/myapp').then(() => {
+    console.log("Connected to Database");
+}).catch((err) => {
+    console.log("Not Connected to Database ERROR! ", err);
+});
+
+
+
+app.use((req, res, next)=>{
+    res.locals.currentUser=req.user;
+    next();
+})
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
+passport.use(User.createStrategy());
 passport.use(new LocalStragety(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -52,6 +56,7 @@ passport.deserializeUser(User.deserializeUser());
 //routes using 
 app.use(indexRoutes);
 app.use(adminRoutes);
+app.use(blogRoutes);
 
 
 
