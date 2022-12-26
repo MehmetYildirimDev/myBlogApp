@@ -1,4 +1,6 @@
 const express = require('express'),
+      User    = require('../models/usersModel'),
+      passport= require("passport"),
       router  = express.Router();
 
 
@@ -45,16 +47,37 @@ router.get("/signin", (req,res)=>{
       res.render("admin/signin");     
 })
 
-router.post("/signin", (req,res)=>{
-    
-})
+router.post("/signin", passport.authenticate(("local",
+{
+      successRedirect:"/",
+      failureRedirect:"/signin"
+}
+)),(req, res)=>{});
 
 router.get("/signup", (req,res)=>{
     res.render("admin/signup");     
 })
 
+
+
 router.post("/signup", (req,res)=>{
-  
+      console.log(req.body.name);
+      let newUSer = new User({username: req.body.username }) 
+      User.register(newUSer, req.body.password, (err, user)=>{
+            if(err){
+                  console.log(err);
+                  res.redirect("/signup");
+                  console.log("hata");
+            }
+            passport.authenticate("local")(req,res, ()=>{
+                  res.redirect("/"); 
+            });
+      })
+})
+
+router.get("/signout", (req, res)=>{
+      req.logOut();
+      res.redirect("/");
 })
 
 
